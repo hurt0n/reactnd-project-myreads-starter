@@ -6,24 +6,32 @@ import BookItem from './BookItem'
 
 class Search extends Component {
 
+  /**
+  * @constructor
+  * @description We wrap our main API call funtion with debounce
+  * wrapper to prevent too many requests
+  */
   constructor() {
     super();
     this.callAjax = _.debounce(this.callAjax, 300);
   }
 
+  state = {
+    query: '',
+    books: []
+  }
+
+  /**
+  * @description Makes API call every certain amount of time defined
+  * in debounce function call
+  */
   callAjax(query) {
     this.setState({query})
     if (query) {
-      // const match = new RegExp(escapeRegExp(query.trim()), 'i')
       BooksAPI.search(query, 10).then((books) => {
         this.setState({books})
       })
     }
-  }
-
-  state = {
-    query: '',
-    books: []
   }
 
   searchBooks(e) {
@@ -37,6 +45,7 @@ class Search extends Component {
           <Link to='/' className="close-search">Close</Link>
           <div className="search-books-input-wrapper">
             <input type="text"
+              // 1. binding app context to searchBooks method
               onChange={this.searchBooks.bind(this)}
               placeholder="Search by title or author"
             />
@@ -53,7 +62,7 @@ class Search extends Component {
           { (Array.isArray(this.state.books) && this.state.query) && (
             <ol className="books-grid">
               {this.state.books.map((book) => (
-                <BookItem key={book.id} book={book} />
+                <BookItem key={book.id} book={book} addBook={this.props.addBook}/>
               ))}
             </ol>
           )}

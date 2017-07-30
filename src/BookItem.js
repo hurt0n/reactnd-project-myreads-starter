@@ -3,15 +3,10 @@ import * as BooksAPI from './BooksAPI'
 
 class BookItem extends Component {
 
-  state = {
-    value: ''
-  }
-
   updateBook(event) {
     const shelf = event.target.value
-    console.log(shelf)
-
-    this.setState({value: event.target.value});
+    this.props.addBook(this.props.book, shelf)
+    debugger
     BooksAPI.update(this.props.book, shelf).then((message) => {
       console.log(message);
     })
@@ -19,7 +14,6 @@ class BookItem extends Component {
 
   render() {
     const {book} = this.props
-    console.log(book)
     return(
       <li>
         <div className="book">
@@ -28,7 +22,7 @@ class BookItem extends Component {
               height: 193,
               backgroundImage: `url('${book.imageLinks ? book.imageLinks.smallThumbnail : ''}')`}}></div>
             <div className="book-shelf-changer">
-              <select onChange={this.updateBook.bind(this)} value={this.state.value}>
+              <select onChange={this.updateBook.bind(this)} value={book.shelf}>
                 <option value="none" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
