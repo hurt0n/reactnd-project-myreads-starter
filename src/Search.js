@@ -27,8 +27,21 @@ class Search extends Component {
   */
   callAjax(query) {
     this.setState({query})
+
+    /**
+    * Clear shelf from books got from search API call,
+    * If rendered book is already in state, just change the shelf
+    */
     if (query) {
       BooksAPI.search(query, 10).then((books) => {
+        books.map(function(book){
+          book.shelf = 'none'
+          this.props.myBooks.map(myBook => {
+            if (myBook.id == book.id) {
+              book.shelf = myBook.shelf
+            }
+          })
+        }.bind(this))
         this.setState({books})
       })
     }

@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 
+/**
+* @description represents Book
+*/
+
 class BookItem extends Component {
 
   updateBook(event) {
     const shelf = event.target.value
     this.props.addBook(this.props.book, shelf)
-    debugger
-    BooksAPI.update(this.props.book, shelf).then((message) => {
-      console.log(message);
-    })
+    // BooksAPI.update(this.props.book, shelf).then((message) => {
+    //   console.log(message);
+    // })
   }
 
   render() {

@@ -22,24 +22,25 @@ class BooksApp extends React.Component {
   }
 
   addBook(updatedBook, shelf) {
-    const myBooks = this.state.myBooks
-    let containsBook = false;
-    updatedBook.shelf = shelf
-    myBooks.map((book) => {
-      if(book.id == updatedBook.id) {
-        book.shelf = shelf
-        containsBook = true;
-      }
-    })
-    if (!containsBook) myBooks.push(updatedBook)
-    this.setState({myBooks})
+    if (updatedBook.shelf !== shelf) {
+      BooksAPI.update(updatedBook, shelf).then(() => {
+        updatedBook.shelf = shelf
+
+        // Filter out the book and append it to the end of the list
+        // so it appears at the end of whatever shelf it was added to.
+        this.setState(state => ({
+          myBooks: state.myBooks.filter(b => b.id !== updatedBook.id).concat([ updatedBook ])
+        }))
+      })
+
   }
+}
 
   render() {
     return (
       <div className="app">
         <Route path="/search" render={() => (
-          <Search addBook={this.addBook}/>
+          <Search addBook={this.addBook} myBooks={this.state.myBooks}/>
         )} />
         <Route exact path="/" render={() => (
           <BookShelves myBooks={this.state.myBooks} addBook={this.addBook}/>
